@@ -1,0 +1,14 @@
+# Firestore Security Rules
+# Copy các rules dưới đây vào Firebase Console > Firestore > Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /notes/{noteId} {
+      // Chỉ cho phép user đọc/ghi ghi chú của chính họ
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      // Cho phép tạo ghi chú mới nếu đã đăng nhập và userId khớp với uid
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+  }
+}
